@@ -1,27 +1,44 @@
-const Fifteen = function () {
+export function Gamer() {
     this.name = "";
-    this.fifteenArray = []
-};
+    this.fifteenArray = [];
+}
 
-Fifteen.prototype.setGamer = function (name, fArray) {
+Gamer.prototype.setGamer = function (name, fArray) {
     this.name = name;
     this.fifteenArray = fArray;
-
-    this.setFileGamers(this.name, this.fifteenArray);
 };
 
-Fifteen.prototype.getNameGamer = function () {
-    return this.name;
+Gamer.prototype.setFileGamers = function () {
+    const body = JSON.stringify(this);
+
+    xhr.open('PUT', '/', true);
+    xhr.setRequestHeader("Content-type", "application/json");
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log(xhr.response);
+        }
+    };
+
+    xhr.send(body);
 };
 
-Fifteen.prototype.getFArrayGamer = function () {
-    return this.fifteenArray;
+Gamer.prototype.getFileGamers = function () {
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log(xhr.response);
+        }
+    };
+
+    xhr.open('GET', '/'+this.name, false);
+    xhr.send(null);
+
+    if(xhr.response !== '') {
+        return JSON.parse(xhr.response);
+    } else {
+        return ;
+    }
 };
 
-Fifteen.prototype.setFileGamers = function (name, fArray) {
-    //функция которая добавляет нового игрока в файл или обновляет игру старого игрока
-};
-
-Fifteen.prototype.getFileGamers = function (name) {
-    //функция которая получает объект игрока из файла и возвращает этот объект (если таков имеется)
-};
+let xhr = new XMLHttpRequest();

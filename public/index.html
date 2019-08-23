@@ -3,33 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>Fifteen</title>
-    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="./css/style.css">
 </head>
 <body>
 
-<section>
-    <h2>Пятнашки</h2>
+<section class="header">
+    <h2 class="header__title">Пятнашки</h2><br>
     <button id="newGame">Новая игра</button><br>
-    <canvas id="canvas" width="320" height="320"></canvas>
-    <form name="formGamer">
-        <input type="text" name="Name" id="Name" required="required" placeholder="Введите имя"/>
-        <button id="saveGame">Сохранить игру</button>
+    <canvas id="canvas" width="320" height="320" class="canvas"></canvas>
+    <div class="form__input">
+        <input type="text" name="Name" id="Name" class="form__name" placeholder="Введите имя" minlength="3"/>
+    </div>
+    <div class="form__buttons">
         <button id="openGame">Загрузить игру</button>
-    </form>
+        <button id="saveGame">Сохранить игру</button>
+    </div>
 </section>
 
-<script src="js/controller.js"></script>
-<script src="js/model.js"></script>
+<script type="module" src="js/controller.js"></script>
+<script type="module" src="js/model.js"></script>
 
-<script>
-    const xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = () => {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            console.log(xhr.responseText);
-        }
-    };
-    xhr.open('GET', "http://localhost:3000/", true);
-    xhr.send();
-</script>
 </body>
 </html>
