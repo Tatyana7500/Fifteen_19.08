@@ -23,15 +23,16 @@ Gamer.prototype.setFileGamers = function () {
     xhr.send(body);
 };
 
-Gamer.prototype.getFileGamers = function () {
+Gamer.prototype.getFileGamers = function (callback) {
 
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4 && xhr.status === 200) {
             console.log(xhr.response);
+            callback(xhr.response);
         }
     };
 
-    xhr.open('GET', '/'+this.name, false);
+    xhr.open('GET', '/'+this.name, true);
     xhr.send(null);
 
     if(xhr.response !== '') {

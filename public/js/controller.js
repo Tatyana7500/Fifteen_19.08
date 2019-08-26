@@ -1,44 +1,44 @@
-import { Gamer } from "./model.js";
+import {Gamer} from "./model.js";
 
-function Game(context, cellSize){
+function Game(context, cellSize) {
     let arr = [
-        [1,2,3,4],
-        [5,6,7,8],
-        [9,10,11,12],
-        [13,14,15,0]
+        [1, 2, 3, 4],
+        [5, 6, 7, 8],
+        [9, 10, 11, 12],
+        [13, 14, 15, 0]
     ];
     let clicks = 0;
 
-    function cellView(x, y){
+    function cellView(x, y) {
         context.fillStyle = "#f2caff";
-        context.fillRect(x+1, y+1, cellSize-2, cellSize-2);
+        context.fillRect(x + 1, y + 1, cellSize - 2, cellSize - 2);
     }
 
-    function numView(){
-        context.font = "bold "+(cellSize/2)+"px Sans";
+    function numView() {
+        context.font = `bold ${cellSize / 2}px Sans`;
         context.textAlign = "center";
         context.textBaseline = "middle";
         context.fillStyle = "#222";
     }
 
-    function zeroView(x, y){
+    function zeroView(x, y) {
         context.fillStyle = "#222";
-        context.fillRect(x+1, y+1, cellSize-2, cellSize-2);
+        context.fillRect(x + 1, y + 1, cellSize - 2, cellSize - 2);
     }
 
-    this.getNullCell = function(){
-        for (let i = 0; i<4; i++){
-            for (let j=0; j<4; j++){
+    this.getNullCell = function () {
+        for (let i = 0; i < 4; i++) {
+            for (let j = 0; j < 4; j++) {
 
-                if(arr[j][i] === 0){
+                if (arr[j][i] === 0) {
 
-                    return {'x': i, 'y': j};
+                    return { x: i, y: j };
                 }
             }
         }
     };
 
-    this.draw = function() {
+    this.draw = function () {
         for (let i = 0; i < 4; i++) {
             for (let j = 0; j < 4; j++) {
 
@@ -53,7 +53,7 @@ function Game(context, cellSize){
         }
     };
 
-    this.move = function(x, y) {
+    this.move = function (x, y) {
         let nullX = this.getNullCell().x;
         let nullY = this.getNullCell().y;
 
@@ -64,14 +64,13 @@ function Game(context, cellSize){
         }
     };
 
-    this.victory = function() {
-        let e = [[1,2,3,4], [5,6,7,8], [9,10,11,12], [13,14,15,0]];
+    this.victory = function () {
         let res = true;
 
         for (let i = 0; i < 4; i++) {
             for (let j = 0; j < 4; j++) {
 
-                if (e[i][j] != arr[i][j]) {
+                if (Game.victoryArray[i][j] !== arr[i][j]) {
                     res = false;
                 }
             }
@@ -81,37 +80,53 @@ function Game(context, cellSize){
     };
 
     function getRandomBool() {
-        if (Math.floor(Math.random() * 2) === 0) {
-
-            return true;
-        }
+        return Math.random() > 0.5;
     }
 
-    this.mix = function(stepCount) {
-        let x,y;
+    this.mix = function (stepCount) {
+        let x, y;
+
         for (let i = 0; i < stepCount; i++) {
-            let nullX = this.getNullCell().x;
-            let nullY = this.getNullCell().y;
+            const nullX = this.getNullCell().x;
+            const nullY = this.getNullCell().y;
             let hMove = getRandomBool();
             let upLeft = getRandomBool();
-            if (!hMove && !upLeft) { y = nullY; x = nullX - 1;}
-            if (hMove && !upLeft)  { x = nullX; y = nullY + 1;}
-            if (!hMove && upLeft)  { y = nullY; x = nullX + 1;}
-            if (hMove && upLeft)   { x = nullX; y = nullY - 1;}
+
+            if (!hMove && !upLeft) {
+                y = nullY;
+                x = nullX - 1;
+            }
+
+            if (hMove && !upLeft) {
+                x = nullX;
+                y = nullY + 1;
+            }
+
+            if (!hMove && upLeft) {
+                y = nullY;
+                x = nullX + 1;
+            }
+
+            if (hMove && upLeft) {
+                x = nullX;
+                y = nullY - 1;
+            }
+
             if (0 <= x && x <= 3 && 0 <= y && y <= 3) {
                 this.move(x, y);
             }
         }
+
         clicks = 0;
     };
 
-    this.getClicks = function() {
+    this.getClicks = function () {
 
         return clicks;
     };
 
     //получаю массив из функции загрузки сохранения и подменяю им текущий массив и заново перерисовываю канвас
-    this.arrayRestore = function(newArray) {
+    this.arrayRestore = function (newArray) {
         arr = newArray;
     };
 
@@ -121,10 +136,11 @@ function Game(context, cellSize){
     };
 }
 
+Game.victoryArray = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 0]];
 
 const init = () => {
     let canvas = document.getElementById("canvas");
-    canvas.width  = 320;
+    canvas.width = 320;
     canvas.height = 320;
     let cellSize = canvas.width / 4;
     let context = canvas.getContext("2d");
@@ -134,15 +150,15 @@ const init = () => {
     game.mix(300);
     game.draw();
 
-    canvas.onclick = function(e) {
+    canvas.onclick = function (e) {
         let x = (e.pageX - canvas.offsetLeft) / cellSize | 0;
-        let y = (e.pageY - canvas.offsetTop)  / cellSize | 0;
+        let y = (e.pageY - canvas.offsetTop) / cellSize | 0;
         event(x, y);
     };
 
-    canvas.ontouchend = function(e) {
+    canvas.ontouchend = function (e) {
         let x = (e.touches[0].pageX - canvas.offsetLeft) / cellSize | 0;
-        let y = (e.touches[0].pageY - canvas.offsetTop)  / cellSize | 0;
+        let y = (e.touches[0].pageY - canvas.offsetTop) / cellSize | 0;
         event(x, y);
     };
 
@@ -151,7 +167,7 @@ const init = () => {
         context.fillRect(0, 0, canvas.width, canvas.height);
         game.draw();
         if (game.victory()) {
-            alert("Собрано за "+game.getClicks()+" касание!");
+            alert("Собрано за " + game.getClicks() + " касание!");
             game.mix(300);
             context.fillRect(0, 0, canvas.width, canvas.height);
             game.draw(context, cellSize);
@@ -177,14 +193,15 @@ const init = () => {
         if (userName !== '') {
             let gamer = new Gamer();
             gamer.setGamer(userName);
-            gamer = gamer.getFileGamers();
-
-            if (gamer) {
-                game.arrayRestore(gamer.fifteenArray); //загружаю массив обратно и заменяю им исходный
-                game.draw(); //вновь отрисовываю канвас
-            }else{
-                alert('Сохраненной игры с таким именем нет!');
-            }
+            gamer.getFileGamers(data => {
+                gamer = JSON.parse(data);
+                if (gamer) {
+                    game.arrayRestore(gamer.fifteenArray); //загружаю массив обратно и заменяю им исходный
+                    game.draw(); //вновь отрисовываю канвас
+                } else {
+                    alert('Сохраненной игры с таким именем нет!');
+                }
+            });
         } else {
             alert("Введите имя, чтобы загрузить Вашу игру!");
         }
